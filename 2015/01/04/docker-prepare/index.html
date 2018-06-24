@@ -111,10 +111,7 @@ CMD [&quot;/sbin/my_init&quot;]
 
 <p>Свой публичный ssh-ключ, естественно, надо положить в <em>my_rsa_public_key</em> рядом с <em>Dockerfile</em>.</p>
 
-<p>Сборка: <code>docker build -t smile/base .</code> и запуск:</p>
-
-<pre><code>docker run --rm -it -p 2022:22 smile/base /sbin/my_init -- bash -l
-</code></pre>
+<p>Сборка: <code>docker build -t smile/base .</code> и запуск <code>docker run --rm -it -p 2022:22 smile/base /sbin/my_init -- bash -l</code></p>
 
 <pre><code class="language---rm```">
 Также на контейнер можно зайти по ssh: ```ssh -p 2022 root@localhost```.
