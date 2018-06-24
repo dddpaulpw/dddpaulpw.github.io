@@ -21,5 +21,17 @@
  Macvlan Driver - Docker Macvlan driver is out of experimental in Docker 1.12. Configuring Macvlan and Ipvlan Linux Networking - What Docker Macvlan driver does under the hood. Materials for 2016 DevOps Networking Forum (DNF) Presentation - Slides about Docker networking with Ansible playbooks. Видео докладов с Docker митапа - Особо интересен доклад Константина Назарова &amp;ldquo;Каждому контейнеру по IP&amp;rdquo; (на русском).</description>
     </item>
     
+    <item>
+      <title>Docker registry on Centos 7</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/docker-registry/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/docker-registry/</guid>
+      <description>1. Create logical volumes for direct-lvm production mode
+Assume that we have 40 GByte block device named as /dev/sdb with one full-size Linux partition on it.
+Official Device Mapper storage driver guide recommends to use thin pools now. Use these commands to create thin-provisioned logical volumes:
+pvcreate /dev/sdb1 # Create physical volume vgcreate docker /dev/sdb1 # Create volume group and add this physical volume to it # Create logical volumes lvcreate --wipesignatures y -n data docker -l 40%VG lvcreate --wipesignatures y -n registry docker -l 40%VG lvcreate --wipesignatures y -n metadata docker -l 2%VG # Convert data volume to thin pool&amp;#39;s data volume lvconvert -y --zero n -c 512K --thinpool docker/data --poolmetadata docker/metadata # Set thin pool autoextend features cat &amp;gt; /etc/lvm/profile/docker-data.</description>
+    </item>
+    
   </channel>
 </rss>
