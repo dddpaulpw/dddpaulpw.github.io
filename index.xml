@@ -12,6 +12,18 @@
     
     
     <item>
+      <title>Bind interfaces to multiple zones with Firewalld on CentOS-7</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/firewalld-zones/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/firewalld-zones/</guid>
+      <description>As you can expect from man firewall-cmd interface binding to zone other than default (public) could be achieved with the following command sequence:
+firewall-cmd --zone public --remove-interface eth1 --permanent firewall-cmd --zone internal --add-interface eth1 --permanent firewall-cmd --reload  Seems like it&amp;rsquo;s done:
+firewall-cmd --get-zone-of-interface=eth1 internal  But after firewalld restart or server reboot things aren&amp;rsquo;t so bright:
+firewall-cmd --get-zone-of-interface=eth1 public  The reason is in this CentOS-7 bug. The only workaround is to specify zone in /etc/sysconfig/network-scripts/ifcfg-eth1 file:</description>
+    </item>
+    
+    <item>
       <title>Docker network and Swarm mode links</title>
       <link>http://blog.dddpaul.pw/2018/06/24/docker-network-swarm-links/</link>
       <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>

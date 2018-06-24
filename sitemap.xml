@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://blog.dddpaul.pw/2018/06/24/firewalld-zones/</loc>
+    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://blog.dddpaul.pw/2018/06/24/docker-network-swarm-links/</loc>
     <lastmod>2018-06-24T19:00:00+00:00</lastmod>
   </url>
