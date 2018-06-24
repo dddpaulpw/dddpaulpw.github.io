@@ -34,6 +34,18 @@ pvcreate /dev/sdb1 # Create physical volume vgcreate docker /dev/sdb1 # Create v
     </item>
     
     <item>
+      <title>Let&#39;s Encrypt with lego and Nginx</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/lego-nginx/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/lego-nginx/</guid>
+      <description>xenolf/lego it&amp;rsquo;s a feature-rich Let&amp;rsquo;s Encrypt client and ACME library written in Go.
+1. Prepare Nginx server
+server { listen 80 default; server_name example.org www.example.org; location /.well-known/acme-challenge { proxy_pass http://127.0.0.1:81; proxy_set_header Host $host; } # Other directives }  2. Update ca-certificates for CentOS 5 (optional)
+Let&amp;rsquo;s Encrypt CA certificate is not included into root CA bundle of old Linux distributions like RHEL/Centos 5. You have to replace this bundle manually with fresh one from cURL website:</description>
+    </item>
+    
+    <item>
       <title>Запуск контейнеров с помощью Fig</title>
       <link>http://blog.dddpaul.pw/2018/06/24/docker-fig/</link>
       <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>

@@ -33,5 +33,17 @@ Official Device Mapper storage driver guide recommends to use thin pools now. Us
 pvcreate /dev/sdb1 # Create physical volume vgcreate docker /dev/sdb1 # Create volume group and add this physical volume to it # Create logical volumes lvcreate --wipesignatures y -n data docker -l 40%VG lvcreate --wipesignatures y -n registry docker -l 40%VG lvcreate --wipesignatures y -n metadata docker -l 2%VG # Convert data volume to thin pool&amp;#39;s data volume lvconvert -y --zero n -c 512K --thinpool docker/data --poolmetadata docker/metadata # Set thin pool autoextend features cat &amp;gt; /etc/lvm/profile/docker-data.</description>
     </item>
     
+    <item>
+      <title>Let&#39;s Encrypt with lego and Nginx</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/lego-nginx/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/lego-nginx/</guid>
+      <description>xenolf/lego it&amp;rsquo;s a feature-rich Let&amp;rsquo;s Encrypt client and ACME library written in Go.
+1. Prepare Nginx server
+server { listen 80 default; server_name example.org www.example.org; location /.well-known/acme-challenge { proxy_pass http://127.0.0.1:81; proxy_set_header Host $host; } # Other directives }  2. Update ca-certificates for CentOS 5 (optional)
+Let&amp;rsquo;s Encrypt CA certificate is not included into root CA bundle of old Linux distributions like RHEL/Centos 5. You have to replace this bundle manually with fresh one from cURL website:</description>
+    </item>
+    
   </channel>
 </rss>
