@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-  <title>Pavel Derendyaev test</title>
+  <title>Подготовка и запуск docker-контейнеров &middot; Pavel Derendyaev test</title>
 
   
   <link type="text/css" rel="stylesheet" href="http://blog.dddpaul.pw/css/print.css" media="print">
@@ -23,7 +23,7 @@
   <link rel="shortcut icon" href="/favicon.png">
 
   
-  <link href="http://blog.dddpaul.pw/index.xml" rel="alternate" type="application/rss+xml" title="Pavel Derendyaev test" />
+  <link href="" rel="alternate" type="application/rss+xml" title="Pavel Derendyaev test" />
 
   
 </head>
@@ -70,19 +70,11 @@
 
 
 <div class="content container">
-    <div class="posts">
+    <div class="post">
+        <h1 class="post-title">Подготовка и запуск docker-контейнеров</h1>
+        <span class="post-date">2015-01-04</span>
 
         
-        <div class="post">
-            <h1 class="post-title">
-                <a href="http://blog.dddpaul.pw/2015/01/04/docker-prepare/">
-                    Подготовка и запуск docker-контейнеров
-                </a>
-            </h1>
-
-            <span class="post-date">2015-01-04</span>
-
-            
 
 <p>Это первая статья цикла 
 <a href='http://blog.dddpaul.pw//series/building-test-environments-with-docker/'>Building test environments with Docker</a>.</p>
@@ -146,54 +138,61 @@ IPv6 отключается после выполнения серии sysctl-к
 
 <p>На основе docker-nginx можно строить более сложные образы, такие как <a href="https://github.com/dddpaul/docker-java7-server">docker-java7-server</a> и  <a href="https://github.com/dddpaul/docker-tomcat7">docker-tomcat7</a>. На основе последнего уже строятся образы для конечных приложений.</p>
 
-        </div>
-        
-        <div class="post">
-            <h1 class="post-title">
-                <a href="http://blog.dddpaul.pw/2014/07/28/oldest/">
-                    First note
-                </a>
-            </h1>
-
-            <span class="post-date">2014-07-28</span>
-
-            <p>This blog is based on <a href="http://hugo.spf13.com/">Hugo</a> - static site generator written on Go. GitHub interaction is organized with use of <a href="http://hugo.spf13.com/tutorials/github_pages_blog">Hosting on GitHub Pages</a> tutorial. See &ldquo;Configure git Workflow&rdquo; section specifically.</p>
-
-<p>And for all of the git 1.7.x (and older) users - you can grab <em>git-subtree</em> from <em>contrib</em> directory of <a href="https://github.com/git/git">Git repo</a>. I&rsquo;ve used <em>git-subtree</em> from latest 1.8.x. It&rsquo;s just a shell script, run <code>make</code>, <code>chmod +x git-subtree</code> and copy it to <em>/usr/lib/git-core</em>.</p>
-
-        </div>
-        
     </div>
 
+    
+        
+        
+        <hr/>
+        <p><a href="" id="series"></a>This is a post in the <b>Building test environments with Docker</b> series.<br/>
+            Other posts in this series:</p>
+        
+        
+        <ul class="series">
+            
+            <li>2015-01-04 -
+                
+                    Подготовка и запуск docker-контейнеров
+                
+            </li>
+            
+        </ul>
+    
 
+    Tags:
+    <ul id="tags">
+        
+        
+        <li><a href="http://blog.dddpaul.pw//tags/devops">Devops</a> </li>
+        
+        <li><a href="http://blog.dddpaul.pw//tags/docker">Docker</a> </li>
+        
+    </ul>
+
+    <div id="disqus_thread"></div>
 <script type="text/javascript">
-    (function (d, w, c) {
-        (w[c] = w[c] || []).push(function() {
-            try {
-                w.yaCounter34067830 = new Ya.Metrika({
-                    id:34067830,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true
-                });
-            } catch(e) { }
-        });
 
-        var n = d.getElementsByTagName("script")[0],
-                s = d.createElement("script"),
-                f = function () { n.parentNode.insertBefore(s, n); };
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = "https://mc.yandex.ru/metrika/watch.js";
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
 
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        } else { f(); }
-    })(document, window, "yandex_metrika_callbacks");
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'dddpaul-github';
+    var disqus_identifier = 'http:\/\/blog.dddpaul.pw\/2015\/01\/04\/docker-prepare\/';
+    var disqus_title = 'Подготовка и запуск docker-контейнеров';
+    var disqus_url = 'http:\/\/blog.dddpaul.pw\/2015\/01\/04\/docker-prepare\/';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/34067830" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
+</div>
 
 </body>
 </html>
+

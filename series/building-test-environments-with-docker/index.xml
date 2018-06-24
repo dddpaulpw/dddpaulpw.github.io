@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Pavel Derendyaev test</title>
-    <link>http://blog.dddpaul.pw/</link>
-    <description>Recent content on Pavel Derendyaev test</description>
+    <title>Building Test Environments With Docker on Pavel Derendyaev test</title>
+    <link>http://blog.dddpaul.pw/series/building-test-environments-with-docker/</link>
+    <description>Recent content in Building Test Environments With Docker on Pavel Derendyaev test</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 04 Jan 2015 13:49:06 +0000</lastBuildDate>
     
-	<atom:link href="http://blog.dddpaul.pw/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://blog.dddpaul.pw/series/building-test-environments-with-docker/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -20,16 +20,6 @@
       <description>Это первая статья цикла Building test environments with Docker.
 Сразу оговорюсь, что все docker-контейнеры основаны на baseimage-docker. Этот образ позволяет запускать в контейнере несколько приложений с помощью супервизора runit и содержит ssh, cron, syslog &amp;ldquo;из коробки&amp;rdquo;.
 Хотя подобный подход не рекомендуется разработчиками Docker, он очень удобен в эксплуатации и не принуждает разработчика к своему &amp;ldquo;proper way&amp;rdquo;. Всегда можно использовать канонический подход от Docker с volumes и nsenter, а, при желании, подключаться к контейнерам по ssh.</description>
-    </item>
-    
-    <item>
-      <title>First note</title>
-      <link>http://blog.dddpaul.pw/2014/07/28/oldest/</link>
-      <pubDate>Mon, 28 Jul 2014 12:00:00 +0000</pubDate>
-      
-      <guid>http://blog.dddpaul.pw/2014/07/28/oldest/</guid>
-      <description>This blog is based on Hugo - static site generator written on Go. GitHub interaction is organized with use of Hosting on GitHub Pages tutorial. See &amp;ldquo;Configure git Workflow&amp;rdquo; section specifically.
-And for all of the git 1.7.x (and older) users - you can grab git-subtree from contrib directory of Git repo. I&amp;rsquo;ve used git-subtree from latest 1.8.x. It&amp;rsquo;s just a shell script, run make, chmod +x git-subtree and copy it to /usr/lib/git-core.</description>
     </item>
     
   </channel>

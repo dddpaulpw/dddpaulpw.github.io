@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Pavel Derendyaev test</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 28 Jul 2014 12:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 04 Jan 2015 13:49:06 +0000</lastBuildDate>
     
 	<atom:link href="http://blog.dddpaul.pw/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Подготовка и запуск docker-контейнеров</title>
+      <link>http://blog.dddpaul.pw/2015/01/04/docker-prepare/</link>
+      <pubDate>Sun, 04 Jan 2015 13:49:06 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2015/01/04/docker-prepare/</guid>
+      <description>Это первая статья цикла Building test environments with Docker.
+Сразу оговорюсь, что все docker-контейнеры основаны на baseimage-docker. Этот образ позволяет запускать в контейнере несколько приложений с помощью супервизора runit и содержит ssh, cron, syslog &amp;ldquo;из коробки&amp;rdquo;.
+Хотя подобный подход не рекомендуется разработчиками Docker, он очень удобен в эксплуатации и не принуждает разработчика к своему &amp;ldquo;proper way&amp;rdquo;. Всегда можно использовать канонический подход от Docker с volumes и nsenter, а, при желании, подключаться к контейнерам по ssh.</description>
+    </item>
     
     <item>
       <title>First note</title>
