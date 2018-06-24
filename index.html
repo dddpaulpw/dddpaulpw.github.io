@@ -75,6 +75,77 @@
         
         <div class="post">
             <h1 class="post-title">
+                <a href="http://blog.dddpaul.pw/2018/06/24/docker-fig/">
+                    Запуск контейнеров с помощью Fig
+                </a>
+            </h1>
+
+            <span class="post-date">2018-06-24</span>
+
+            
+
+<p>Это третья статья цикла 
+<a href='http://blog.dddpaul.pw//series/building-test-environments-with-docker/'>Building test environments with Docker</a>.</p>
+
+<p>Как мы уже убедились, запуск контейнеров с помощью <code>docker run</code> — занятие весьма муторное, т.к. необходимо указывать множество опций. При запуске же нескольких контейнеров ситуация только ухудшается, т.к. теперь нужно задавать имена и линки.</p>
+
+<p>Эту проблему решает инструмент <a href="http://www.fig.sh/">Fig</a>, который может запустить/остановить целое тестовое окружение, состоящее из набора контейнеров. Описание контейнеров задано в YAML-файле. Таким образом, этот YAML-файл представляет собой конфигурацию тестового окружения.</p>
+
+<p>Конфигурация нашего тестового окружения <em>test-env/fig.yml</em>:</p>
+
+<pre><code>app1:
+  image: smile/app1
+  ports: ['2021:22', '8081:80']
+  privileged: true
+
+app2:
+  image: smile/app2
+  ports: ['2022:22', '8082:80']
+  privileged: true
+
+gate:
+  image: smile/gate
+  links: [app1, app2]
+  ports: ['2020:22', '80:80']
+  privileged: true
+</code></pre>
+
+<p>Запуск тестового окружения (находясь в каталоге с файлом <em>fig.yml</em>): <code>fig up</code>.</p>
+
+<p>По-умолчанию, Fig захватывает консоль и мультиплексирует вывод всех контейнеров. Для запуска в detached mode нужно использовать опцию <code>-d</code>. Посмотреть вывод контейнеров в этом режиме можно с помощью команды <code>fig logs</code>.</p>
+
+<p>Статус тестового окружения: <code>fig ps</code>.</p>
+
+<p>Остановка тестового окружения: <code>fig stop</code>.</p>
+
+<h3 id="запуск-тестового-окружения-с-помощью-upstart">Запуск тестового окружения с помощью Upstart</h3>
+
+<p>Job <em>/etc/init/fig-test-env.conf</em> создан на основе <a href="https://gist.github.com/HeyImAlex/9649374">HeyImAlex/fig.conf</a>. Для отключения автостарта нужно закомментировать вторую строчку (&ldquo;start on &hellip;&rdquo;).</p>
+
+<pre><code>description &quot;Test environment runner&quot;
+start on filesystem and started docker
+stop on runlevel [!2345]
+respawn
+chdir /path/to/test-env
+script
+  # Wait for docker to finish starting up first.
+  FILE=/var/run/docker.sock
+  while [ ! -e $FILE ] ; do
+    inotifywait -t 2 -e create $(dirname $FILE)
+  done
+  /usr/local/bin/fig up
+end script
+post-stop script
+ /usr/local/bin/fig stop
+end script
+</code></pre>
+
+<p>Теперь можно запустить тестовое окружение из любого места командой <code>start fig-test-env</code>, а остановить — <code>stop fig-test-env</code>.</p>
+
+        </div>
+        
+        <div class="post">
+            <h1 class="post-title">
                 <a href="http://blog.dddpaul.pw/2015/01/04/docker-prepare/">
                     Подготовка и запуск docker-контейнеров
                 </a>

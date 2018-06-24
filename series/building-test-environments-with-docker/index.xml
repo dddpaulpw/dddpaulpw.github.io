@@ -6,10 +6,21 @@
     <description>Recent content in Building Test Environments With Docker on Pavel Derendyaev test</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 04 Jan 2015 13:49:06 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 Jun 2018 19:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://blog.dddpaul.pw/series/building-test-environments-with-docker/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Запуск контейнеров с помощью Fig</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/docker-fig/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/docker-fig/</guid>
+      <description>Это третья статья цикла Building test environments with Docker.
+Как мы уже убедились, запуск контейнеров с помощью docker run — занятие весьма муторное, т.к. необходимо указывать множество опций. При запуске же нескольких контейнеров ситуация только ухудшается, т.к. теперь нужно задавать имена и линки.
+Эту проблему решает инструмент Fig, который может запустить/остановить целое тестовое окружение, состоящее из набора контейнеров. Описание контейнеров задано в YAML-файле. Таким образом, этот YAML-файл представляет собой конфигурацию тестового окружения.</description>
+    </item>
     
     <item>
       <title>Подготовка и запуск docker-контейнеров</title>
