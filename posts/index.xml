@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Docker network and Swarm mode links</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/docker-network-swarm-links/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/docker-network-swarm-links/</guid>
+      <description>Some useful articles &amp;amp; videos about modern networking in Docker:
+ Macvlan Driver - Docker Macvlan driver is out of experimental in Docker 1.12. Configuring Macvlan and Ipvlan Linux Networking - What Docker Macvlan driver does under the hood. Materials for 2016 DevOps Networking Forum (DNF) Presentation - Slides about Docker networking with Ansible playbooks. Видео докладов с Docker митапа - Особо интересен доклад Константина Назарова &amp;ldquo;Каждому контейнеру по IP&amp;rdquo; (на русском).</description>
+    </item>
+    
+    <item>
       <title>Запуск контейнеров с помощью Fig</title>
       <link>http://blog.dddpaul.pw/2018/06/24/docker-fig/</link>
       <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
