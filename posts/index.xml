@@ -34,6 +34,18 @@ pvcreate /dev/sdb1 # Create physical volume vgcreate docker /dev/sdb1 # Create v
     </item>
     
     <item>
+      <title>Java network listeners</title>
+      <link>http://blog.dddpaul.pw/2018/06/24/java-listeners/</link>
+      <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/24/java-listeners/</guid>
+      <description>I&amp;rsquo;ve written a small listeners library today. It allows to create Callables which can be submitted to ExecutorService. The callable itself implements creating server socket and binding it to local port.
+There two principal type of listeners: blocking and non-blocking (thanks to Java NIO.
+Blocking listener is very simple but in can&amp;rsquo;t be interrupted by calling thread. So there&amp;rsquo;s no point in that:
+Future&amp;lt;Socket&amp;gt; future = executor.submit( Listeners.createListener( PORT ) ); try { Socket socket = future.</description>
+    </item>
+    
+    <item>
       <title>Kafka tips &amp; tricks</title>
       <link>http://blog.dddpaul.pw/2018/06/24/kafka-tips/</link>
       <pubDate>Sun, 24 Jun 2018 19:00:00 +0000</pubDate>
