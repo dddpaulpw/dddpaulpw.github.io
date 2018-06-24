@@ -119,12 +119,13 @@ CMD [&quot;/sbin/my_init&quot;]
 
 <p>Свой публичный ssh-ключ, естественно, надо положить в <em>my_rsa_public_key</em> рядом с <em>Dockerfile</em>.</p>
 
-<p>Сборка: <code>docker build -t smile/base .</code> и запуск: <code>docker run --rm -it -p 2022:22 smile/base /sbin/my_init -- bash -l</code></p>
+<p>Сборка: <code>docker build -t smile/base .</code>
+Запуск: <code>docker run --rm -it -p 2022:22 smile/base /sbin/my_init -- bash -l</code></p>
 
 <p>Примечания:</p>
 
 <ul>
-<li><code>--rm</code> - используется для удаления контейнера после его остановки,</li>
+<li><code>--rm</code> — используется для удаления контейнера после его остановки,</li>
 <li><code>-it</code> — для терминального интерактивного режима,</li>
 <li><code>-- bash -l</code> — для запуска шелла после запуска всех сервисов.</li>
 </ul>
