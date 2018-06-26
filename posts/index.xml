@@ -6,10 +6,32 @@
     <description>Recent content in Posts on Pavel Derendyaev test</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 24 Jun 2018 19:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 Jun 2018 19:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://blog.dddpaul.pw/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Simple Netcat tool written in Go</title>
+      <link>http://blog.dddpaul.pw/2018/06/25/gonc/</link>
+      <pubDate>Mon, 25 Jun 2018 19:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/25/gonc/</guid>
+      <description>It&amp;rsquo;s spectacularly simple to implement TCP Netcat in Go thanks to io.Copy.
+type Progress struct { bytes uint64 } func TransferStreams(con net.Conn) { c := make(chan Progress) // Read from Reader and write to Writer until EOF 	copy := func(r io.ReadCloser, w io.WriteCloser) { defer func() { r.Close() w.Close() }() n, _ := io.Copy(w, r) c &amp;lt;- Progress{bytes: uint64(n)} } go copy(con, os.Stdout) go copy(os.Stdin, con) p := &amp;lt;-c log.</description>
+    </item>
+    
+    <item>
+      <title>Связывание контейнеров</title>
+      <link>http://blog.dddpaul.pw/2018/06/25/docker-linking/</link>
+      <pubDate>Mon, 25 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/25/docker-linking/</guid>
+      <description>Это вторая статья цикла Building test environments with Docker.
+При создании тестовых окружений из нескольких контейнеров неизбежно возникает задача их взаимного связывания. Набивший оскомину пример: контейнеру с приложением нужен контейнер БД. В нашем же случае, контейнеру с балансером нужны контейнеры с апстримами.
+Статья Linking Containers Together полностью раскрывает вопрос линковки контейнеров. Осветим вкратце лишь основные моменты:
+ каждый контейнер необходимо как-то назвать с помощью опции --name; ссылка на контейнер-зависимость обозначается опцией --link; в итоге, внутри зависимого контейнера, инициализируется множество переменных окружения, содержащих параметры контейнера-зависимости, а также в /etc/hosts заносится IP-адрес контейнера-зависимости.</description>
+    </item>
     
     <item>
       <title>Bind interfaces to multiple zones with Firewalld on CentOS-7</title>

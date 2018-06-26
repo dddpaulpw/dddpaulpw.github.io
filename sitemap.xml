@@ -3,6 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://blog.dddpaul.pw/2018/06/25/gonc/</loc>
+    <lastmod>2018-06-25T19:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.dddpaul.pw/2018/06/25/docker-linking/</loc>
+    <lastmod>2018-06-25T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://blog.dddpaul.pw/2018/06/24/firewalld-zones/</loc>
     <lastmod>2018-06-24T19:00:00+00:00</lastmod>
   </url>
@@ -49,19 +59,19 @@
   
   <url>
     <loc>http://blog.dddpaul.pw/series/building-test-environments-with-docker/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://blog.dddpaul.pw/tags/devops/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://blog.dddpaul.pw/tags/docker/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -73,7 +83,7 @@
   
   <url>
     <loc>http://blog.dddpaul.pw/tags/golang/</loc>
-    <lastmod>2014-07-28T12:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T19:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -97,31 +107,31 @@
   
   <url>
     <loc>http://blog.dddpaul.pw/tags/linux/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T19:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://blog.dddpaul.pw/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T19:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://blog.dddpaul.pw/posts/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T19:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://blog.dddpaul.pw/series/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://blog.dddpaul.pw/tags/</loc>
-    <lastmod>2018-06-24T19:00:00+00:00</lastmod>
+    <lastmod>2018-06-25T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

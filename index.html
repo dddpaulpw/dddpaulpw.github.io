@@ -81,6 +81,238 @@
         
         <div class="post">
             <h1 class="post-title">
+                <a href="http://blog.dddpaul.pw/2018/06/25/gonc/">
+                    Simple Netcat tool written in Go
+                </a>
+            </h1>
+
+            <span class="post-date">2018-06-25</span>
+
+            <p>It&rsquo;s spectacularly simple to implement TCP Netcat in Go thanks to <a href="https://golang.org/pkg/io/#Copy">io.Copy</a>.</p>
+
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Progress</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">bytes</span> <span class="kt">uint64</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">TransferStreams</span><span class="p">(</span><span class="nx">con</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">Progress</span><span class="p">)</span>
+
+	<span class="c1">// Read from Reader and write to Writer until EOF
+</span><span class="c1"></span>	<span class="nx">copy</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">ReadCloser</span><span class="p">,</span> <span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">WriteCloser</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">r</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+			<span class="nx">w</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+		<span class="p">}()</span>
+		<span class="nx">n</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Copy</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+		<span class="nx">c</span> <span class="o">&lt;-</span> <span class="nx">Progress</span><span class="p">{</span><span class="nx">bytes</span><span class="p">:</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">n</span><span class="p">)}</span>
+	<span class="p">}</span>
+
+	<span class="k">go</span> <span class="nb">copy</span><span class="p">(</span><span class="nx">con</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">)</span>
+	<span class="k">go</span> <span class="nb">copy</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">,</span> <span class="nx">con</span><span class="p">)</span>
+
+	<span class="nx">p</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">c</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: Connection has been closed by remote peer, %d bytes has been received\n&#34;</span><span class="p">,</span> <span class="nx">con</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">(),</span> <span class="nx">p</span><span class="p">.</span><span class="nx">bytes</span><span class="p">)</span>
+	<span class="nx">p</span> <span class="p">=</span> <span class="o">&lt;-</span><span class="nx">c</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: Local peer has been stopped, %d bytes has been sent\n&#34;</span><span class="p">,</span> <span class="nx">con</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">(),</span> <span class="nx">p</span><span class="p">.</span><span class="nx">bytes</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+
+<p>But it&rsquo;s much more harder to do the same for UDP. UDP is connectionless so there is no &ldquo;streams&rdquo; that can be copied. You must tediously read data from connection to buffer and write this buffer to stdout by one goroutine. And read data from stdin and write it to connection from other goroutine.</p>
+
+<p>Some remarks:</p>
+
+<ul>
+<li>Without streams there is no EOF so we must use some predefined disconnect sequence to terminate transfer.</li>
+<li>Without established connection a listener doesn&rsquo;t know the remote peer address until actual data will be received. So listener must wait for data, then read this data and remote address with <a href="https://golang.org/pkg/net/#UDPConn.ReadFrom">*net.UDPConn.ReadFrom</a>.</li>
+</ul>
+
+<p><div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
+	<span class="c1">// BufferLimit specifies buffer size that is sufficient to
+</span><span class="c1"></span>	<span class="c1">// handle full-size UDP datagram or TCP segment in one step
+</span><span class="c1"></span>	<span class="nx">BufferLimit</span> <span class="p">=</span> <span class="mi">2</span><span class="o">&lt;&lt;</span><span class="mi">16</span> <span class="o">-</span> <span class="mi">1</span>
+	<span class="c1">// DisconnectSequence is used to disconnect UDP sessions
+</span><span class="c1"></span>	<span class="nx">DisconnectSequence</span> <span class="p">=</span> <span class="s">&#34;~.&#34;</span>
+<span class="p">)</span>
+
+<span class="c1">// Progress indicates transfer status
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Progress</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">remoteAddr</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Addr</span>
+	<span class="nx">bytes</span>      <span class="kt">uint64</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">TransferPackets</span><span class="p">(</span><span class="nx">con</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">Progress</span><span class="p">)</span>
+
+	<span class="c1">// Read from Reader and write to Writer until EOF.
+</span><span class="c1"></span>	<span class="c1">// ra is an address to whom packets must be sent in listen mode.
+</span><span class="c1"></span>	<span class="nx">copy</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">ReadCloser</span><span class="p">,</span> <span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">WriteCloser</span><span class="p">,</span> <span class="nx">ra</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Addr</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">r</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+			<span class="nx">w</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+		<span class="p">}()</span>
+
+		<span class="nx">buf</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">BufferLimit</span><span class="p">)</span>
+		<span class="nx">bytes</span> <span class="o">:=</span> <span class="nb">uint64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="kd">var</span> <span class="nx">n</span> <span class="kt">int</span>
+		<span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+		<span class="kd">var</span> <span class="nx">addr</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Addr</span>
+
+		<span class="k">for</span> <span class="p">{</span>
+			<span class="c1">// Read
+</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">con</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.(</span><span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPConn</span><span class="p">);</span> <span class="nx">ok</span> <span class="p">{</span>
+				<span class="nx">n</span><span class="p">,</span> <span class="nx">addr</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">con</span><span class="p">.</span><span class="nx">ReadFrom</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span>
+				<span class="c1">// In listen mode remote address is unknown until read from
+</span><span class="c1"></span>				<span class="c1">// connection. Inform caller function with this address.
+</span><span class="c1"></span>				<span class="k">if</span> <span class="nx">con</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">()</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">ra</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+					<span class="nx">ra</span> <span class="p">=</span> <span class="nx">addr</span>
+					<span class="nx">c</span> <span class="o">&lt;-</span> <span class="nx">Progress</span><span class="p">{</span><span class="nx">remoteAddr</span><span class="p">:</span> <span class="nx">ra</span><span class="p">}</span>
+				<span class="p">}</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">Read</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+					<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: ERROR: %s\n&#34;</span><span class="p">,</span> <span class="nx">ra</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+				<span class="p">}</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="nb">string</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">n</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="nx">DisconnectSequence</span> <span class="p">{</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+
+			<span class="c1">// Write
+</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">con</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">w</span><span class="p">.(</span><span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">UDPConn</span><span class="p">);</span> <span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">con</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">()</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="c1">// Connection remote address must be nil otherwise
+</span><span class="c1"></span>				<span class="c1">// &#34;WriteTo with pre-connected connection&#34; will be thrown
+</span><span class="c1"></span>				<span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">con</span><span class="p">.</span><span class="nx">WriteTo</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">n</span><span class="p">],</span> <span class="nx">ra</span><span class="p">)</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">w</span><span class="p">.</span><span class="nx">Write</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">n</span><span class="p">])</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: ERROR: %s\n&#34;</span><span class="p">,</span> <span class="nx">ra</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+			<span class="nx">bytes</span> <span class="o">+=</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">c</span> <span class="o">&lt;-</span> <span class="nx">Progress</span><span class="p">{</span><span class="nx">bytes</span><span class="p">:</span> <span class="nx">bytes</span><span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="nx">ra</span> <span class="o">:=</span> <span class="nx">con</span><span class="p">.</span><span class="nx">RemoteAddr</span><span class="p">()</span>
+	<span class="k">go</span> <span class="nb">copy</span><span class="p">(</span><span class="nx">con</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">,</span> <span class="nx">ra</span><span class="p">)</span>
+	<span class="c1">// If connection hasn&#39;t got remote address then wait for it from receiver goroutine
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">ra</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">p</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">c</span>
+		<span class="nx">ra</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">remoteAddr</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: Datagram has been received\n&#34;</span><span class="p">,</span> <span class="nx">ra</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">go</span> <span class="nb">copy</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">,</span> <span class="nx">con</span><span class="p">,</span> <span class="nx">ra</span><span class="p">)</span>
+
+	<span class="nx">p</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">c</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: Connection has been closed, %d bytes has been received\n&#34;</span><span class="p">,</span> <span class="nx">ra</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">bytes</span><span class="p">)</span>
+	<span class="nx">p</span> <span class="p">=</span> <span class="o">&lt;-</span><span class="nx">c</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&#34;[%s]: Local peer has been stopped, %d bytes has been sent\n&#34;</span><span class="p">,</span> <span class="nx">ra</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">bytes</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div></p>
+
+<p>Links:</p>
+
+<ul>
+<li><a href="https://github.com/dddpaul/gonc">Simple Netcat tool written in Go (gonc)</a> - gonc Github project</li>
+<li><a href="http://www.minaandrawos.com/2016/05/14/udp-vs-tcp-in-golang/">Implementing UDP vs TCP in Golang</a> - Golang TCP/UDP tips and tricks</li>
+<li><a href="https://betabug.nl/golang-bits-and-pieces-io-with-readers-and-writers/">Golang bits and pieces: IO with readers and writers</a> - Readers and Writers everywhere</li>
+<li><a href="https://medium.com/@benbjohnson/go-walkthrough-io-package-8ac5e95a9fbd">Go Walkthrough: io package</a> - Tips and bits of Go io package</li>
+<li><a href="https://habrahabr.ru/post/306914/">Разбираемся в Go: пакет io</a> - Previous article translated</li>
+<li><a href="https://github.com/yanzay/netcat">Simple netcat on go</a> - Another Netcat implementation</li>
+<li><a href="https://www.joyent.com/blog/tcp-puzzlers">TCP Puzzlers</a> - TCP connection tricky parts</li>
+</ul>
+
+        </div>
+        
+        <div class="post">
+            <h1 class="post-title">
+                <a href="http://blog.dddpaul.pw/2018/06/25/docker-linking/">
+                    Связывание контейнеров
+                </a>
+            </h1>
+
+            <span class="post-date">2018-06-25</span>
+
+            <p>Это вторая статья цикла 
+<a href='http://blog.dddpaul.pw//series/building-test-environments-with-docker/'>Building test environments with Docker</a>.</p>
+
+<p>При создании тестовых окружений из нескольких контейнеров неизбежно возникает задача их взаимного связывания. Набивший оскомину пример: контейнеру с приложением нужен контейнер БД. В нашем же случае, контейнеру с балансером нужны контейнеры с апстримами.</p>
+
+<p>Статья <a href="https://docs.docker.com/userguide/dockerlinks/">Linking Containers Together</a> полностью раскрывает вопрос линковки контейнеров. Осветим вкратце лишь основные моменты:</p>
+
+<ul>
+<li>каждый контейнер необходимо как-то назвать с помощью опции <code>--name</code>;</li>
+<li>ссылка на контейнер-зависимость обозначается опцией <code>--link</code>;</li>
+<li>в итоге, внутри зависимого контейнера, инициализируется множество переменных окружения, содержащих параметры контейнера-зависимости, а также в <em>/etc/hosts</em> заносится IP-адрес контейнера-зависимости.</li>
+</ul>
+
+<p>Например, так выглядит последовательный запуск 3-х контейнеров, причем 3-й зависит от первых двух:</p>
+
+<pre><code>docker run -d --privileged -p 2021:22 -p 8081:80 --name app1 smile/tomcat7
+docker run -d --privileged -p 2022:22 -p 8082:80 --name app2 smile/tomcat7
+docker run -d --privileged -p 2020:22 -p 80:80 --name gate --link app1:app1 --link app2:app2 smile/gate
+</code></pre>
+
+<p>Для проверки можно использовать вывод <code>docker inspect</code>:</p>
+
+<pre><code>docker inspect -f &quot;{{ .HostConfig.Links }}&quot; gate
+
+[/app1:/gate/app1 /app2:/gate/app2]
+</code></pre>
+
+<p>Опция <code>-d (detach mode)</code> здесь необходима, чтобы контейнеры запускались в фоновом режиме и не захватывали консоль.</p>
+
+<p>Теперь, если зайти в контейнер gate (<code>ssh -p 2020 root@localhost</code>) и посмотреть переменные окружения, то будет ясно, что gate &ldquo;видит&rdquo; exposed-порты и IP-адрес контейнера-зависимости:</p>
+
+<pre><code>root@aba982937531:~# env | grep APP1
+APP1_NAME=/gate/app1
+APP1_PORT_22_TCP=tcp://172.17.0.28:22
+APP1_PORT_80_TCP=tcp://172.17.0.28:80
+APP1_PORT_22_TCP_ADDR=172.17.0.28
+APP1_PORT_80_TCP_ADDR=172.17.0.28
+APP1_PORT_22_TCP_PORT=22
+APP1_PORT_80_TCP_PORT=80
+APP1_PORT_80_TCP_PROTO=tcp
+APP1_PORT_22_TCP_PROTO=tcp
+APP1_PORT=tcp://172.17.0.28:22
+...
+</code></pre>
+
+<p>Еще лучше дела обстоят с <em>/etc/hosts</em>:</p>
+
+<pre><code>root@aba982937531:~# grep app1 /etc/hosts
+172.17.0.28	app1
+
+</code></pre>
+
+<p>Модификация <em>/etc/hosts</em>, например, дает возможность писать следующие кофиги Nginx:</p>
+
+<pre><code>server {
+    listen 80 default_server;
+    server_name _;
+
+    location /app1 {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; #
+        proxy_pass http://app1:80/app1;                              # app1 host here
+        proxy_redirect http://127.0.0.1:8081/app1 /app1;             #
+    }
+
+    location /app2 {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; #
+        proxy_pass http://app2:80/app2;                              # and app2 host here
+        proxy_redirect http://127.0.0.1:8082/app2 /app2;             #
+    }
+}
+</code></pre>
+
+<p>Таким образом, в первом приближении, встроенная возможность связывания контейнеров в Docker решает наши проблемы.</p>
+
+        </div>
+        
+        <div class="post">
+            <h1 class="post-title">
                 <a href="http://blog.dddpaul.pw/2018/06/24/firewalld-zones/">
                     Bind interfaces to multiple zones with Firewalld on CentOS-7
                 </a>
@@ -688,21 +920,6 @@ CMD [&quot;/sbin/my_init&quot;]
 <h3 id="остальные-образы">Остальные образы</h3>
 
 <p>На основе docker-nginx можно строить более сложные образы, такие как <a href="https://github.com/dddpaul/docker-java7-server">docker-java7-server</a> и  <a href="https://github.com/dddpaul/docker-tomcat7">docker-tomcat7</a>. На основе последнего уже строятся образы для конечных приложений.</p>
-
-        </div>
-        
-        <div class="post">
-            <h1 class="post-title">
-                <a href="http://blog.dddpaul.pw/2014/07/28/oldest/">
-                    First note
-                </a>
-            </h1>
-
-            <span class="post-date">2014-07-28</span>
-
-            <p>This blog is based on <a href="http://hugo.spf13.com/">Hugo</a> - static site generator written on Go. GitHub interaction is organized with use of <a href="http://hugo.spf13.com/tutorials/github_pages_blog">Hosting on GitHub Pages</a> tutorial. See &ldquo;Configure git Workflow&rdquo; section specifically.</p>
-
-<p>And for all of the git 1.7.x (and older) users - you can grab <em>git-subtree</em> from <em>contrib</em> directory of <a href="https://github.com/git/git">Git repo</a>. I&rsquo;ve used <em>git-subtree</em> from latest 1.8.x. It&rsquo;s just a shell script, run <code>make</code>, <code>chmod +x git-subtree</code> and copy it to <em>/usr/lib/git-core</em>.</p>
 
         </div>
         

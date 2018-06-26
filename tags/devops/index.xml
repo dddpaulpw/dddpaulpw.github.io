@@ -6,10 +6,22 @@
     <description>Recent content in Devops on Pavel Derendyaev test</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 24 Jun 2018 19:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://blog.dddpaul.pw/tags/devops/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Связывание контейнеров</title>
+      <link>http://blog.dddpaul.pw/2018/06/25/docker-linking/</link>
+      <pubDate>Mon, 25 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.dddpaul.pw/2018/06/25/docker-linking/</guid>
+      <description>Это вторая статья цикла Building test environments with Docker.
+При создании тестовых окружений из нескольких контейнеров неизбежно возникает задача их взаимного связывания. Набивший оскомину пример: контейнеру с приложением нужен контейнер БД. В нашем же случае, контейнеру с балансером нужны контейнеры с апстримами.
+Статья Linking Containers Together полностью раскрывает вопрос линковки контейнеров. Осветим вкратце лишь основные моменты:
+ каждый контейнер необходимо как-то назвать с помощью опции --name; ссылка на контейнер-зависимость обозначается опцией --link; в итоге, внутри зависимого контейнера, инициализируется множество переменных окружения, содержащих параметры контейнера-зависимости, а также в /etc/hosts заносится IP-адрес контейнера-зависимости.</description>
+    </item>
     
     <item>
       <title>Запуск контейнеров с помощью Fig</title>
